@@ -15,7 +15,9 @@ Class Application Extends App
 		
 		graphics = New Canvas(Null)
 		
-		screenCapture = New Image(DeviceWidth(), DeviceHeight())
+		screenCapture = New Image(DeviceWidth(), DeviceHeight(), 0.5, 0.5)
+		
+		pixelData = New DataBuffer(screenCapture.Width*screenCapture.Height*4)
 		
 		redraw = False
 		
@@ -59,8 +61,6 @@ Class Application Extends App
 			
 			graphics.SetAlpha(1.0)
 			
-			Local pixelData:= New DataBuffer(screenCapture.Width*screenCapture.Height*4)
-			
 			graphics.ReadPixels(0, 0, screenCapture.Width, screenCapture.Height, pixelData)
 			
 			screenCapture.WritePixels(0, 0, screenCapture.Width, screenCapture.Height, pixelData)
@@ -77,8 +77,16 @@ Class Application Extends App
 		Return 0
 	End
 	
+	Method OnClose:Int()
+		pixelData.Discard(); pixelData = Null
+		
+		Return Super.OnClose()
+	End
+	
 	' Fields:
 	Field screenCapture:Image
+	Field pixelData:DataBuffer
+	
 	Field graphics:Canvas
 	
 	Field redraw:Bool
